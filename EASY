@@ -72,3 +72,12 @@ LOCKED PROBLEM: Same as Q. 1068 but in the output we need product id and total q
 SELECT product_id, SUM(quantity) AS total_quantity
 FROM Sales
 GROUP BY product_id
+
+1075. Project Employees I
+https://leetcode.com/problems/project-employees-i/
+
+SELECT p.project_id, ROUND(AVG(experience_years), 2) AS average_years
+FROM project AS p
+JOIN employee AS e
+ON p.employee_id = e.employee_id
+GROUP BY p.project_id
