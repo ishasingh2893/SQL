@@ -39,3 +39,12 @@ SELECT id, movie, description, rating
 FROM cinema
 WHERE (id % 2 = 1) AND description != 'boring'
 ORDER BY rating Desc 
+
+627. Swap Sex of Employees
+https://leetcode.com/problems/swap-sex-of-employees/description/
+
+UPDATE Salary
+SET Sex = CASE 
+    WHEN sex = 'm' THEN 'f'
+    else 'm' 
+END;
