@@ -1,55 +1,5 @@
 607. Sales Person
-
-Table: SalesPerson
-
-+-----------------+---------+
-| Column Name     | Type    |
-+-----------------+---------+
-| sales_id        | int     |
-| name            | varchar |
-| salary          | int     |
-| commission_rate | int     |
-| hire_date       | date    |
-+-----------------+---------+
-sales_id is the primary key (column with unique values) for this table.
-Each row of this table indicates the name and the ID of a salesperson alongside their salary, commission rate, and hire date.
-
- 
-
-Table: Company
-
-+-------------+---------+
-| Column Name | Type    |
-+-------------+---------+
-| com_id      | int     |
-| name        | varchar |
-| city        | varchar |
-+-------------+---------+
-com_id is the primary key (column with unique values) for this table.
-Each row of this table indicates the name and the ID of a company and the city in which the company is located.
-
- 
-
-Table: Orders
-
-+-------------+------+
-| Column Name | Type |
-+-------------+------+
-| order_id    | int  |
-| order_date  | date |
-| com_id      | int  |
-| sales_id    | int  |
-| amount      | int  |
-+-------------+------+
-order_id is the primary key (column with unique values) for this table.
-com_id is a foreign key (reference column) to com_id from the Company table.
-sales_id is a foreign key (reference column) to sales_id from the SalesPerson table.
-Each row of this table contains information about one order. 
-This includes the ID of the company, the ID of the salesperson, the date of the order, and the amount paid.
-
-Write a solution to find the names of all the salespersons who did not have any orders related to the company with the name "RED".
-
-Return the result table in any order.
+https://leetcode.com/problems/sales-person/description/
 
 SELECT SALESPERSON.NAME AS NAME
 FROM SALESPERSON
@@ -61,22 +11,7 @@ WHERE SALES_ID NOT IN (
 
 
 610. Triangle Judgement
-
-Table: Triangle
-
-+-------------+------+
-| Column Name | Type |
-+-------------+------+
-| x           | int  |
-| y           | int  |
-| z           | int  |
-+-------------+------+
-In SQL, (x, y, z) is the primary key column for this table.
-Each row of this table contains the lengths of three line segments.
-
-Report for every three line segments whether they can form a triangle.
-
-Return the result table in any order.
+https://leetcode.com/problems/triangle-judgement/
 
 SELECT X, Y, Z
        CASE
@@ -84,3 +19,15 @@ SELECT X, Y, Z
            ELSE 'NO'
        END AS TRIANGLE
 FROM Triangle
+
+
+619. Biggest Single Number
+https://leetcode.com/problems/biggest-single-number/description/
+
+Select Max(num) as num
+From (
+    Select num
+    From MyNumbers
+    Group By num
+    Having Count(*) = 1
+) As single_num;
