@@ -57,3 +57,10 @@ FROM ActorDirector
 GROUP BY actor_id, director_id
 HAVING Count(*) >= 3
 
+1068. Product Sales Analysis I
+https://leetcode.com/problems/product-sales-analysis-i/description/
+
+SELECT product_name, year, price
+FROM Sales as s
+JOIN Product as p
+ON s.product_id = p.product_id
