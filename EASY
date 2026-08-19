@@ -64,3 +64,11 @@ SELECT product_name, year, price
 FROM Sales as s
 JOIN Product as p
 ON s.product_id = p.product_id
+
+
+1069. Product Sales Analysis II
+LOCKED PROBLEM: Same as Q. 1068 but in the output we need product id and total quantity (2 col)
+
+SELECT product_id, SUM(quantity) AS total_quantity
+FROM Sales
+GROUP BY product_id
