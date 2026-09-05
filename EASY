@@ -115,3 +115,7 @@ HAVING SUM(price) = (
         GROUP BY seller_id
     ) AS max_price
 );
+
+1083. Sales Analysis II
+Task: Report the buyer_ids of buyers who bought S8 but not iPhone. 
+
