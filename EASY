@@ -146,3 +146,44 @@ JOIN Sales as s
 ON p.product_id = s.product_id
 GROUP BY p.product_id
 HAVING MIN(s.sale_date) >= '2019-01-01' AND MAX(s.sale_date) <= '2019-03-31'
+
+1113: Reported Posts
+Locked Problem: find how many distinct posts were reported yesterday, broken down by report reason.
+SELECT 
+    extra AS report_reason,
+    COUNT(DISTINCT post_id) AS report_count
+FROM Actions
+WHERE action = 'report'
+  AND action_date = DATE_SUB('2019-07-05', INTERVAL 1 DAY)
+GROUP BY extra;
+
+1113. Reported Posts I
+Locked
+Treating a specific date as "today," find how many distinct posts were reported yesterday, 
+broken down by report reason.
+
+SELECT extra AS report_reason, COUNT(DISTINCT post_id) AS report_count
+FROM Actions
+WHERE action = 'report' AND action_date = DATE_SUB('2019-07-05', INTERVAL 1 DAY)
+GROUP BY extra;
+
+
+1132. Reported Posts II
+Locked
+For each day, look at all posts that were reported that day. 
+Of those reported posts, what percentage were also removed? 
+Then average that daily percentage across all days that had at least
+one report.
+
+SELECT 
+    ROUND(AVG(daily_percent), 2) AS average_daily_percent
+FROM (
+    SELECT 
+        a.action_date,
+        COUNT(DISTINCT r.post_id) / COUNT(DISTINCT a.post_id) * 100 AS daily_percent
+    FROM Actions a
+    LEFT JOIN Removals r
+        ON a.post_id = r.post_id
+    WHERE a.action = 'report'
+    GROUP BY a.action_date
+) AS daily_stats;
