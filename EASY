@@ -97,6 +97,7 @@ HAVING COUNT(employee_id) = (
 );
 
 1082. Sales Analysis I
+Locked Problem
 Two tables:
 Product(product_id, product_name, unit_price) — product_id is primary key.
 Sales(seller_id, product_id, buyer_id, sale_date, quantity, price)
@@ -117,5 +118,31 @@ HAVING SUM(price) = (
 );
 
 1083. Sales Analysis II
+Locked Problem
 Task: Report the buyer_ids of buyers who bought S8 but not iPhone. 
 
+SELECT s.buyer_id
+FROM Sales s
+JOIN Product p ON s.product_id = p.product_id
+GROUP BY s.buyer_id
+HAVING SUM(p.product_name = 'S8') > 0 AND SUM(p.product_name = 'iPhone') = 0;
+--------------------------------------------------------------------------
+SELECT DISTINCT s.buyer_id
+FROM Sales s
+JOIN Product p ON s.product_id = p.product_id
+WHERE p.product_name = 'S8'
+    AND NOT EXISTS (
+      SELECT 1
+      FROM Sales s2
+      JOIN Product p2 ON s2.product_id = p2.product_id
+      WHERE p2.product_name = 'iPhone' AND s2.buyer_id = s.buyer_id);
+
+
+1084. Sales Analysis III
+
+SELECT p.product_name, p.product_id
+FROM Product as p
+JOIN Sales as s
+ON p.product_id = s.product_id
+GROUP BY p.product_id
+HAVING MIN(s.sale_date) >= '2019-01-01' AND MAX(s.sale_date) <= '2019-03-31'
