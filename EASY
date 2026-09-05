@@ -95,3 +95,23 @@ HAVING COUNT(employee_id) = (
     ORDER BY COUNT(employee_id) DESC
     LIMIT 1
 );
+
+1082. Sales Analysis I
+Two tables:
+Product(product_id, product_name, unit_price) — product_id is primary key.
+Sales(seller_id, product_id, buyer_id, sale_date, quantity, price)
+can have repeated rows; 
+product_id is a foreign key to Product.
+Task: Report the seller_id(s) of the best seller(s) by total sales price, across all their sales.
+
+SELECT seller_id
+FROM Sales
+GROUP BY seller_id
+HAVING SUM(price) = (
+    SELECT MAX(cnt)
+    FROM (
+        SELECT SUM(price) AS cnt
+        FROM Sales
+        GROUP BY seller_id
+    ) AS max_price
+);
