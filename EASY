@@ -187,3 +187,4 @@ FROM (
     WHERE a.action = 'report'
     GROUP BY a.action_date
 ) AS daily_stats;
+
