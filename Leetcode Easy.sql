@@ -1,0 +1,192 @@
+
+--------- LEETCODE EASY ------------
+
+-- 607. Sales Person
+-- https://leetcode.com/problems/sales-person/description/
+
+SELECT SALESPERSON.NAME AS NAME
+FROM SALESPERSON
+WHERE SALES_ID NOT IN (
+    SELECT SALES_ID FROM ORDERS WHERE COM_ID = (
+        SELECT COM_ID FROM COMPANY WHERE NAME = 'RED'
+    )
+)
+
+
+-- 610. Triangle Judgement
+-- https://leetcode.com/problems/triangle-judgement/
+
+SELECT X, Y, Z
+       CASE
+           WHEN X+Y>Z AND X+Z>Y AND Y+Z>X THEN 'Yes'
+           ELSE 'NO'
+       END AS TRIANGLE
+FROM Triangle
+
+
+-- 619. Biggest Single Number
+-- https://leetcode.com/problems/biggest-single-number/description/
+
+Select Max(num) as num
+From (
+    Select num
+    From MyNumbers
+    Group By num
+    Having Count(*) = 1
+) As single_num;
+
+-- 620. Not Boring Movies
+-- https://leetcode.com/problems/not-boring-movies/description/
+
+SELECT id, movie, description, rating
+FROM cinema
+WHERE (id % 2 = 1) AND description != 'boring'
+ORDER BY rating Desc 
+
+-- 627. Swap Sex of Employees
+-- https://leetcode.com/problems/swap-sex-of-employees/description/
+
+UPDATE Salary
+SET Sex = CASE 
+    WHEN sex = 'm' THEN 'f'
+    else 'm' 
+END;
+
+-- 1050. Actors and Directors Who Cooperated At Least Three Times
+-- https://leetcode.com/problems/actors-and-directors-who-cooperated-at-least-three-times/description/
+
+SELECT actor_id, director_id
+FROM ActorDirector
+GROUP BY actor_id, director_id
+HAVING Count(*) >= 3
+
+-- 1068. Product Sales Analysis I
+-- https://leetcode.com/problems/product-sales-analysis-i/description/
+
+SELECT product_name, year, price
+FROM Sales as s
+JOIN Product as p
+ON s.product_id = p.product_id
+
+
+-- 1069. Product Sales Analysis II
+-- LOCKED PROBLEM: Same as Q. 1068 but in the output we need product id and total quantity (2 col)
+
+SELECT product_id, SUM(quantity) AS total_quantity
+FROM Sales
+GROUP BY product_id
+
+-- 1075. Project Employees I
+-- https://leetcode.com/problems/project-employees-i/
+
+SELECT p.project_id, ROUND(AVG(experience_years), 2) AS average_years
+FROM project AS p
+JOIN employee AS e
+ON p.employee_id = e.employee_id
+GROUP BY p.project_id
+
+-- 1076. Project Employees II
+-- LOCKED PROBLEM: Report all the projects that have the most employees
+
+SELECT project_id
+FROM Project
+GROUP BY project_id
+HAVING COUNT(employee_id) = (
+    SELECT COUNT(employee_id)
+    FROM Project
+    GROUP BY project_id
+    ORDER BY COUNT(employee_id) DESC
+    LIMIT 1
+);
+
+-- 1082. Sales Analysis I
+-- Locked Problem
+-- Two tables:
+-- Product(product_id, product_name, unit_price) — product_id is primary key.
+-- Sales(seller_id, product_id, buyer_id, sale_date, quantity, price)
+-- can have repeated rows; 
+-- product_id is a foreign key to Product.
+-- Task: Report the seller_id(s) of the best seller(s) by total sales price, across all their sales.
+
+SELECT seller_id
+FROM Sales
+GROUP BY seller_id
+HAVING SUM(price) = (
+    SELECT MAX(cnt)
+    FROM (
+        SELECT SUM(price) AS cnt
+        FROM Sales
+        GROUP BY seller_id
+    ) AS max_price
+);
+
+-- 1083. Sales Analysis II
+-- Locked Problem
+-- Task: Report the buyer_ids of buyers who bought S8 but not iPhone. 
+
+SELECT s.buyer_id
+FROM Sales s
+JOIN Product p ON s.product_id = p.product_id
+GROUP BY s.buyer_id
+HAVING SUM(p.product_name = 'S8') > 0 AND SUM(p.product_name = 'iPhone') = 0;
+--------------------------------------------------------------------------
+SELECT DISTINCT s.buyer_id
+FROM Sales s
+JOIN Product p ON s.product_id = p.product_id
+WHERE p.product_name = 'S8'
+    AND NOT EXISTS (
+      SELECT 1
+      FROM Sales s2
+      JOIN Product p2 ON s2.product_id = p2.product_id
+      WHERE p2.product_name = 'iPhone' AND s2.buyer_id = s.buyer_id);
+
+
+-- 1084. Sales Analysis III
+
+SELECT p.product_name, p.product_id
+FROM Product as p
+JOIN Sales as s
+ON p.product_id = s.product_id
+GROUP BY p.product_id
+HAVING MIN(s.sale_date) >= '2019-01-01' AND MAX(s.sale_date) <= '2019-03-31'
+
+-- 1113: Reported Posts
+-- Locked Problem: find how many distinct posts were reported yesterday, broken down by report reason.
+SELECT 
+    extra AS report_reason,
+    COUNT(DISTINCT post_id) AS report_count
+FROM Actions
+WHERE action = 'report'
+  AND action_date = DATE_SUB('2019-07-05', INTERVAL 1 DAY)
+GROUP BY extra;
+
+-- 1113. Reported Posts I
+-- Locked
+-- Treating a specific date as "today," find how many distinct posts were reported yesterday, 
+-- broken down by report reason.
+
+SELECT extra AS report_reason, COUNT(DISTINCT post_id) AS report_count
+FROM Actions
+WHERE action = 'report' AND action_date = DATE_SUB('2019-07-05', INTERVAL 1 DAY)
+GROUP BY extra;
+
+
+-- 1132. Reported Posts II
+-- Locked
+-- For each day, look at all posts that were reported that day. 
+-- Of those reported posts, what percentage were also removed? 
+-- Then average that daily percentage across all days that had at least
+-- one report.
+
+SELECT 
+    ROUND(AVG(daily_percent), 2) AS average_daily_percent
+FROM (
+    SELECT 
+        a.action_date,
+        COUNT(DISTINCT r.post_id) / COUNT(DISTINCT a.post_id) * 100 AS daily_percent
+    FROM Actions a
+    LEFT JOIN Removals r
+        ON a.post_id = r.post_id
+    WHERE a.action = 'report'
+    GROUP BY a.action_date
+) AS daily_stats;
